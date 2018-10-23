@@ -46,25 +46,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String str1 = mEditText1.getText().toString();
             String str2 = mEditText2.getText().toString();
 
-            double num1 = Double.parseDouble(str1);
-            double num2 = Double.parseDouble(str2);
+            try {
+                double num1 = Double.parseDouble(str1);
+                double num2 = Double.parseDouble(str2);
 
-            Intent intent = new Intent(this, SecondActivity.class);
-            switch (v.getId()) {
-                case R.id.button1:
-                    intent.putExtra("VALUE", num1 + num2);
-                    break;
-                case R.id.button2:
-                    intent.putExtra("VALUE", num1 - num2);
-                    break;
-                case R.id.button3:
-                    intent.putExtra("VALUE", num1 * num2);
-                    break;
-                case R.id.button4:
-                    intent.putExtra("VALUE", num1 / num2);
-                    break;
+                Intent intent = new Intent(this, SecondActivity.class);
+                switch (v.getId()) {
+                    case R.id.button1:
+                        intent.putExtra("VALUE", num1 + num2);
+                        break;
+                    case R.id.button2:
+                        intent.putExtra("VALUE", num1 - num2);
+                        break;
+                    case R.id.button3:
+                        intent.putExtra("VALUE", num1 * num2);
+                        break;
+                    case R.id.button4:
+                        if (num2 == 0) {
+                            showAlertDialogOfZero();
+                            return;
+                        } else {
+                            intent.putExtra("VALUE", num1 / num2);
+                        }
+                        break;
+                }
+                startActivity(intent);
+
+            } catch (NumberFormatException e) {
+                showAlertDialog();
             }
-            startActivity(intent);
+
         }
     }
 
@@ -84,5 +95,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
     }
+
+    private void showAlertDialogOfZero() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("入力エラー");
+        alertDialogBuilder.setMessage("0での割り算はできません。");
+
+        alertDialogBuilder.setPositiveButton("了解",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("UI_PARTS", "肯定ボタン");
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
 
 }
